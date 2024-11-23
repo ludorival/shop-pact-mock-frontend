@@ -1,35 +1,40 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
-import './App.css'
+import React, { useState } from "react";
 
-function App() {
-  const [count, setCount] = useState(0)
+const App: React.FC = () => {
+  const [productId, setProductId] = useState<string>("");
+  const [stockInfo, setStockInfo] = useState<string>("");
+
+  const checkStock = async () => {
+    try {
+      const response = await fetch(
+        `/orders/check-stock?productId=${productId}`
+      );
+      if (!response.ok) throw new Error("Stock information not found");
+      const data = await response.json();
+      setStockInfo(
+        `Product ID: ${data.productId}, Stock Available: ${data.stockAvailable}`
+      );
+    } catch (error) {
+      setStockInfo("Error: Unable to fetch stock information");
+    }
+  };
 
   return (
-    <>
-      <div>
-        <a href="https://vite.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
-      </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.tsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
-    </>
-  )
-}
+    <div style={{ padding: "2rem" }}>
+      <h1>Check Product Stock</h1>
+      <input
+        type="text"
+        placeholder="Enter Product ID"
+        value={productId}
+        onChange={(e) => setProductId(e.target.value)}
+        style={{ marginRight: "1rem", padding: "0.5rem" }}
+      />
+      <button onClick={checkStock} style={{ padding: "0.5rem 1rem" }}>
+        Check Stock
+      </button>
+      {stockInfo && <p>{stockInfo}</p>}
+    </div>
+  );
+};
 
-export default App
+export default App;
