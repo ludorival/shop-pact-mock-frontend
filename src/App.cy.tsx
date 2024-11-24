@@ -1,5 +1,6 @@
 import { mount } from 'cypress/react'
 import App from './App'
+import { pact } from '../cypress/support/pact'
 
 Cypress.Commands.add('mount', mount)
 
@@ -18,13 +19,21 @@ describe('App.tsx', () => {
   })
 
   it('displays stock information when stock is available', () => {
-    cy.intercept('GET', '/orders/check-stock*', {
-      statusCode: 200,
-      body: {
-        productId: '12345',
-        stockAvailable: true,
-      },
-    }).as('checkStock')
+    cy.intercept(
+      'GET',
+      '/orders/check-stock*',
+      pact.toHandler({
+        description: 'check-stock returns available stock',
+        providerState: 'product exists',
+        response: {
+          status: 200,
+          body: {
+            productId: '12345',
+            stockAvailable: true,
+          },
+        },
+      })
+    ).as('checkStock')
 
     cy.mount(<App />)
 
@@ -36,13 +45,20 @@ describe('App.tsx', () => {
   })
 
   it('displays stock information when stock is not available', () => {
-    cy.intercept('GET', '/orders/check-stock*', {
-      statusCode: 200,
-      body: {
-        productId: '12345',
-        stockAvailable: false,
-      },
-    }).as('checkStock')
+    cy.intercept(
+      'GET',
+      '/orders/check-stock*',
+      pact.toHandler({
+        description: 'check-stock returns no stock available',
+        response: {
+          status: 200,
+          body: {
+            productId: '12345',
+            stockAvailable: false,
+          },
+        },
+      })
+    ).as('checkStock')
 
     cy.mount(<App />)
 
@@ -56,10 +72,18 @@ describe('App.tsx', () => {
   })
 
   it('handles API errors correctly', () => {
-    cy.intercept('GET', '/orders/check-stock*', {
-      statusCode: 404,
-      body: { message: 'Stock information not found' },
-    }).as('checkStockError')
+    cy.intercept(
+      'GET',
+      '/orders/check-stock*',
+      pact.toHandler({
+        description: 'check-stock returns error',
+        providerState: 'product does not exist',
+        response: {
+          status: 404,
+          body: { message: 'Stock information not found' },
+        },
+      })
+    ).as('checkStockError')
 
     cy.mount(<App />)
 
