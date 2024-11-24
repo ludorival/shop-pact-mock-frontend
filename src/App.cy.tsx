@@ -24,15 +24,15 @@ describe('App.tsx', () => {
       statusCode: 200,
       body: {
         productId: '12345',
-        stockAvailable: true
-      }
+        stockAvailable: true,
+      },
     }).as('checkStock')
 
     cy.mount(<App />)
-    
+
     cy.get('input[type="text"]').type('12345')
     cy.get('button').contains('Check Stock').click()
-    
+
     cy.wait('@checkStock')
     cy.contains('Product ID: 12345, Stock Available: true').should('be.visible')
   })
@@ -42,40 +42,42 @@ describe('App.tsx', () => {
       statusCode: 200,
       body: {
         productId: '12345',
-        stockAvailable: false
-      }
+        stockAvailable: false,
+      },
     }).as('checkStock')
 
     cy.mount(<App />)
-    
+
     cy.get('input[type="text"]').type('12345')
     cy.get('button').contains('Check Stock').click()
-    
+
     cy.wait('@checkStock')
-    cy.contains('Product ID: 12345, Stock Available: false').should('be.visible')
+    cy.contains('Product ID: 12345, Stock Available: false').should(
+      'be.visible'
+    )
   })
 
   it('handles API errors correctly', () => {
     cy.intercept('GET', '/orders/check-stock*', {
       statusCode: 404,
-      body: { message: 'Stock information not found' }
+      body: { message: 'Stock information not found' },
     }).as('checkStockError')
 
     cy.mount(<App />)
-    
+
     cy.get('input[type="text"]').type('12345')
     cy.get('button').contains('Check Stock').click()
-    
+
     cy.wait('@checkStockError')
     cy.contains('Error: Unable to fetch stock information').should('be.visible')
   })
 
   it('allows user to input product ID', () => {
     cy.mount(<App />)
-    
+
     cy.get('input[type="text"]')
       .should('have.attr', 'placeholder', 'Enter Product ID')
       .type('12345')
       .should('have.value', '12345')
   })
-}) 
+})
