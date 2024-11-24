@@ -8,5 +8,6 @@ export const pact = new Pact(
   },
   {
     outputDir: 'pacts',
+    headersConfig: { includes: ['Content-Type'] },
   }
 ) 
