@@ -23,7 +23,8 @@ describe('App.tsx', () => {
       'GET',
       '/orders/check-stock*',
       pact.toHandler({
-        description: 'a request to check available stock',
+        description: 'check-stock returns available stock',
+        providerState: 'product exists',
         response: {
           status: 200,
           body: {
@@ -48,7 +49,7 @@ describe('App.tsx', () => {
       'GET',
       '/orders/check-stock*',
       pact.toHandler({
-        description: 'a request to check available stock',
+        description: 'check-stock returns no stock available',
         response: {
           status: 200,
           body: {
@@ -75,7 +76,8 @@ describe('App.tsx', () => {
       'GET',
       '/orders/check-stock*',
       pact.toHandler({
-        description: 'a request to check stock with error',
+        description: 'check-stock returns error',
+        providerState: 'product does not exist',
         response: {
           status: 404,
           body: { message: 'Stock information not found' },
