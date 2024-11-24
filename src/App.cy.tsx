@@ -1,10 +1,8 @@
 import { mount } from 'cypress/react'
 import App from './App'
 
-// Rendre mount disponible globalement
 Cypress.Commands.add('mount', mount)
 
-// Déclarer le type pour TypeScript
 declare global {
   namespace Cypress {
     interface Chainable {
