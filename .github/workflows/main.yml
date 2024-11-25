@@ -12,7 +12,7 @@ jobs:
     env:
       PACT_BROKER_BASE_URL: ${{ secrets.PACT_BROKER_BASE_URL }}
       PACT_BROKER_TOKEN: ${{ secrets.PACT_BROKER_TOKEN }}
-      GIT_BRANCH: main
+      GIT_BRANCH: ${{ github.ref_name }}
       GIT_COMMIT: ${{ github.sha }}
 
     steps:
