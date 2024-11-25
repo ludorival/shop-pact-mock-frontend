@@ -3,7 +3,7 @@ import { Layout, List, Select, Button, Typography, Alert } from 'antd'
 import { ShoppingCartOutlined } from '@ant-design/icons'
 
 interface Item {
-  id: string
+  id: number
   name: string
   description: string
   stockCount: number
@@ -14,12 +14,8 @@ const { Title, Text } = Typography
 
 const App: React.FC = () => {
   const [items, setItems] = useState<Item[]>([])
-  const [selectedQuantities, setSelectedQuantities] = useState<
-    Record<string, number>
-  >({})
-  const [purchaseErrors, setPurchaseErrors] = useState<Record<string, string>>(
-    {}
-  )
+  const [selectedQuantities, setSelectedQuantities] = useState<Record<number, number>>({})
+  const [purchaseErrors, setPurchaseErrors] = useState<Record<number, string>>({})
 
   useEffect(() => {
     fetchItems()
@@ -31,7 +27,7 @@ const App: React.FC = () => {
       if (!response.ok) throw new Error('Failed to fetch items')
       const data = await response.json()
       setItems(data)
-      const initialQuantities: Record<string, number> = {}
+      const initialQuantities: Record<number, number> = {}
       data.forEach((item: Item) => {
         initialQuantities[item.id] = 1
       })
@@ -39,19 +35,19 @@ const App: React.FC = () => {
     } catch (error) {
       setPurchaseErrors(prev => ({
         ...prev,
-        [items[0].id]: 'Unable to fetch items',
+        [items[0]?.id || 0]: 'Unable to fetch items',
       }))
     }
   }
 
-  const handleQuantityChange = (itemId: string, quantity: number) => {
+  const handleQuantityChange = (itemId: number, quantity: number) => {
     setSelectedQuantities(prev => ({
       ...prev,
       [itemId]: quantity,
     }))
   }
 
-  const handleBuy = async (itemId: string) => {
+  const handleBuy = async (itemId: number) => {
     try {
       setPurchaseErrors(prev => ({ ...prev, [itemId]: '' }))
 
