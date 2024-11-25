@@ -39,7 +39,7 @@ const App: React.FC = () => {
     } catch (error) {
       setPurchaseErrors(prev => ({
         ...prev,
-        [item.id]: 'Unable to fetch items',
+        [items[0].id]: 'Unable to fetch items',
       }))
     }
   }
