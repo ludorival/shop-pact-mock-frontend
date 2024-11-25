@@ -1,37 +1,160 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
+import { Layout, List, Select, Button, Typography, Alert } from 'antd'
+import { ShoppingCartOutlined } from '@ant-design/icons'
+
+interface Item {
+  id: string
+  name: string
+  description: string
+  stockCount: number
+}
+
+const { Content } = Layout
+const { Title, Text } = Typography
 
 const App: React.FC = () => {
-  const [productId, setProductId] = useState<string>('')
-  const [stockInfo, setStockInfo] = useState<string>('')
+  const [items, setItems] = useState<Item[]>([])
+  const [selectedQuantities, setSelectedQuantities] = useState<
+    Record<string, number>
+  >({})
+  const [purchaseErrors, setPurchaseErrors] = useState<Record<string, string>>(
+    {}
+  )
 
-  const checkStock = async () => {
+  useEffect(() => {
+    fetchItems()
+  }, [])
+
+  const fetchItems = async () => {
     try {
-      const response = await fetch(`/orders/check-stock?productId=${productId}`)
-      if (!response.ok) throw new Error('Stock information not found')
+      const response = await fetch(`${import.meta.env.VITE_API_URL}/items`)
+      if (!response.ok) throw new Error('Failed to fetch items')
       const data = await response.json()
-      setStockInfo(
-        `Product ID: ${data.productId}, Stock Available: ${data.stockAvailable}`
-      )
+      setItems(data)
+      const initialQuantities: Record<string, number> = {}
+      data.forEach((item: Item) => {
+        initialQuantities[item.id] = 1
+      })
+      setSelectedQuantities(initialQuantities)
     } catch (error) {
-      setStockInfo('Error: Unable to fetch stock information')
+      setPurchaseErrors(prev => ({
+        ...prev,
+        [item.id]: 'Unable to fetch items',
+      }))
+    }
+  }
+
+  const handleQuantityChange = (itemId: string, quantity: number) => {
+    setSelectedQuantities(prev => ({
+      ...prev,
+      [itemId]: quantity,
+    }))
+  }
+
+  const handleBuy = async (itemId: string) => {
+    try {
+      setPurchaseErrors(prev => ({ ...prev, [itemId]: '' }))
+
+      const response = await fetch(`${import.meta.env.VITE_API_URL}/purchase`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          itemId,
+          quantity: selectedQuantities[itemId],
+        }),
+      })
+
+      if (!response.ok) throw new Error('Purchase failed')
+
+      await fetchItems()
+    } catch (error) {
+      setPurchaseErrors(prev => ({
+        ...prev,
+        [itemId]: 'Unable to complete purchase',
+      }))
     }
   }
 
   return (
-    <div style={{ padding: '2rem' }}>
-      <h1>Check Product Stock</h1>
-      <input
-        type="text"
-        placeholder="Enter Product ID"
-        value={productId}
-        onChange={e => setProductId(e.target.value)}
-        style={{ marginRight: '1rem', padding: '0.5rem' }}
-      />
-      <button onClick={checkStock} style={{ padding: '0.5rem 1rem' }}>
-        Check Stock
-      </button>
-      {stockInfo && <p>{stockInfo}</p>}
-    </div>
+    <Layout
+      style={{
+        minHeight: '100vh',
+        background: 'transparent',
+        width: '100vw',
+        margin: 0,
+        padding: 0,
+      }}
+    >
+      <Content
+        style={{
+          padding: '2rem',
+          width: '100%',
+          display: 'flex',
+          flexDirection: 'column',
+          alignItems: 'center',
+          margin: 0,
+        }}
+      >
+        <Title level={1}>Available Items</Title>
+        <List
+          itemLayout="horizontal"
+          size="large"
+          style={{ width: '100%', padding: '0 2rem' }}
+          dataSource={items}
+          renderItem={item => (
+            <List.Item
+              key={item.id}
+              actions={[
+                <div
+                  key="actions"
+                  style={{ display: 'flex', gap: 16, alignItems: 'center' }}
+                >
+                  <Select
+                    value={selectedQuantities[item.id]}
+                    onChange={value => handleQuantityChange(item.id, value)}
+                    style={{ width: 120 }}
+                  >
+                    {[...Array(item.stockCount)].map((_, i) => (
+                      <Select.Option key={i + 1} value={i + 1}>
+                        {i + 1}
+                      </Select.Option>
+                    ))}
+                  </Select>
+                  <Button
+                    type="primary"
+                    icon={<ShoppingCartOutlined />}
+                    onClick={() => handleBuy(item.id)}
+                    disabled={item.stockCount === 0}
+                  >
+                    Buy Now
+                  </Button>
+                </div>,
+              ]}
+            >
+              <List.Item.Meta
+                title={<Title level={2}>{item.name}</Title>}
+                description={
+                  <>
+                    {item.description}
+                    {purchaseErrors[item.id] && (
+                      <Alert
+                        message={purchaseErrors[item.id]}
+                        type="error"
+                        showIcon
+                        style={{ marginTop: 16 }}
+                      />
+                    )}
+                  </>
+                }
+              />
+              <Text type="secondary">Available Stock: {item.stockCount}</Text>
+            </List.Item>
+          )}
+        />
+      </Content>
+    </Layout>
   )
 }
 

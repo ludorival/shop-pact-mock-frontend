@@ -6,10 +6,11 @@ export default defineConfig({
   plugins: [react()],
   server: {
     proxy: {
-      "/orders": {
-        target: "http://localhost:8080", // Backend OrderService
+      '/v1': {
+        target: 'http://localhost:3000',
         changeOrigin: true,
-      },
+        secure: false
+      }
     },
   },
 })

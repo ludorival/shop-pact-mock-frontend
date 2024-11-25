@@ -12,70 +12,98 @@ declare global {
 }
 
 describe('App.tsx', () => {
+  beforeEach(() => {
+    cy.intercept('GET', `v1/items`, {
+      statusCode: 200,
+      body: [
+        {
+          id: '1',
+          name: 'Test Item 1',
+          description: 'This is a test item',
+          stockCount: 5,
+        },
+        {
+          id: '2',
+          name: 'Test Item 2',
+          description: 'This is another test item',
+          stockCount: 3,
+        },
+      ],
+    }).as('getItems')
+  })
+
   it('displays the application title', () => {
     cy.mount(<App />)
-    cy.contains('h1', 'Check Product Stock').should('be.visible')
+    cy.contains('h1', 'Available Items').should('be.visible')
   })
 
-  it('displays stock information when stock is available', () => {
-    cy.intercept('GET', '/orders/check-stock*', {
+  it('displays items with their details', () => {
+    cy.mount(<App />)
+    cy.wait('@getItems')
+
+    // Check first item
+    cy.contains('h2', 'Test Item 1').should('be.visible')
+    cy.contains('This is a test item').should('be.visible')
+    cy.contains('Available Stock: 5').should('be.visible')
+
+    // Check second item
+    cy.contains('h2', 'Test Item 2').should('be.visible')
+    cy.contains('This is another test item').should('be.visible')
+    cy.contains('Available Stock: 3').should('be.visible')
+  })
+
+  it('allows selecting quantity and buying items', () => {
+    cy.intercept('POST', `v1/purchase`, {
       statusCode: 200,
-      body: {
-        productId: '12345',
-        stockAvailable: true,
-      },
-    }).as('checkStock')
+    }).as('purchase')
 
     cy.mount(<App />)
+    cy.wait('@getItems')
 
-    cy.get('input[type="text"]').type('12345')
-    cy.get('button').contains('Check Stock').click()
+    // Select quantity from dropdown
+    cy.get('.ant-select').first().click()
+    cy.get('.ant-select-item-option').contains('3').click()
 
-    cy.wait('@checkStock')
-    cy.contains('Product ID: 12345, Stock Available: true').should('be.visible')
+    // Click buy button
+    cy.get('button').contains('Buy Now').first().click()
+
+    // Verify purchase request
+    cy.wait('@purchase').its('request.body').should('deep.equal', {
+      itemId: '1',
+      quantity: 3,
+    })
   })
 
-  it('displays stock information when stock is not available', () => {
-    cy.intercept('GET', '/orders/check-stock*', {
+  it('handles purchase errors correctly', () => {
+    cy.intercept('POST', `v1/purchase`, {
+      statusCode: 500,
+    }).as('purchaseError')
+
+    cy.mount(<App />)
+    cy.wait('@getItems')
+
+    cy.get('button').contains('Buy Now').first().click()
+    cy.get('.ant-alert-error').should('be.visible')
+    cy.contains('Unable to complete purchase').should('be.visible')
+  })
+
+  it('disables buy button when stock is 0', () => {
+    cy.intercept('GET', `v1/items`, {
       statusCode: 200,
-      body: {
-        productId: '12345',
-        stockAvailable: false,
-      },
-    }).as('checkStock')
+      body: [
+        {
+          id: '1',
+          name: 'Out of Stock Item',
+          description: 'This item is out of stock',
+          stockCount: 0,
+        },
+      ],
+    }).as('getItems')
 
     cy.mount(<App />)
+    cy.wait('@getItems')
 
-    cy.get('input[type="text"]').type('12345')
-    cy.get('button').contains('Check Stock').click()
-
-    cy.wait('@checkStock')
-    cy.contains('Product ID: 12345, Stock Available: false').should(
-      'be.visible'
-    )
-  })
-
-  it('handles API errors correctly', () => {
-    cy.intercept('GET', '/orders/check-stock*', {
-      statusCode: 404,
-      body: { message: 'Stock information not found' },
-    }).as('checkStockError')
-
-    cy.mount(<App />)
-
-    cy.get('input[type="text"]').type('12345')
-    cy.get('button').contains('Check Stock').click()
-
-    cy.wait('@checkStockError')
-    cy.contains('Error: Unable to fetch stock information').should('be.visible')
-  })
-
-  it('allows user to input product ID', () => {
-    cy.mount(<App />)
-
-    cy.get('input[type="text"]')
-      .should('have.attr', 'placeholder', 'Enter Product ID')
-      .type('12345')
-      .should('have.value', '12345')
+    cy.get('button').contains('Buy Now')
+    cy.get('button').should('be.disabled')
   })
 })
