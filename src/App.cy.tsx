@@ -19,18 +19,18 @@ describe('App.tsx', () => {
       `v1/items`,
       pact.toHandler({
         description: 'Get items should return a list of items',
-        providerStates: 'There are 2 items',
+        providerState: 'There are 2 items',
         response: {
           status: 200,
           body: [
             {
-              id: '1',
+              id: 1,
               name: 'Test Item 1',
               description: 'This is a test item',
               stockCount: 5,
             },
             {
-              id: '2',
+              id: 2,
               name: 'Test Item 2',
               description: 'This is another test item',
               stockCount: 3,
@@ -67,7 +67,7 @@ describe('App.tsx', () => {
       `v1/purchase`,
       pact.toHandler({
         description: 'Purchase should return a success response',
-        providerStates: 'There is an item with stock',
+        providerState: 'There is an item with stock',
         response: {
           status: 200,
         },
@@ -86,7 +86,7 @@ describe('App.tsx', () => {
 
     // Verify purchase request
     cy.wait('@purchase').its('request.body').should('deep.equal', {
-      itemId: '1',
+      itemId: 1,
       quantity: 3,
     })
   })
@@ -97,9 +97,9 @@ describe('App.tsx', () => {
       `v1/purchase`,
       pact.toHandler({
         description: 'Purchase should return an error',
-        providerStates: 'There is an error',
+        providerState: 'There is an error',
         response: {
-          status: 500,
+          status: 400,
         },
       })
     ).as('purchaseError')
@@ -118,12 +118,12 @@ describe('App.tsx', () => {
       `v1/items`,
       pact.toHandler({
         description: 'Get items should return an item with 0 stock',
-        providerStates: 'There is an item with 0 stock',
+        providerState: 'There is an item with 0 stock',
         response: {
           status: 200,
           body: [
             {
-              id: '1',
+              id: 1,
               name: 'Out of Stock Item',
               description: 'This item is out of stock',
               stockCount: 0,
