@@ -17,13 +17,13 @@ describe('App.tsx', () => {
       statusCode: 200,
       body: [
         {
-          id: '1',
+          id: 1,
           name: 'Test Item 1',
           description: 'This is a test item',
           stockCount: 5,
         },
         {
-          id: '2',
+          id: 2,
           name: 'Test Item 2',
           description: 'This is another test item',
           stockCount: 3,
@@ -69,7 +69,7 @@ describe('App.tsx', () => {
 
     // Verify purchase request
     cy.wait('@purchase').its('request.body').should('deep.equal', {
-      itemId: '1',
+      itemId: 1,
       quantity: 3,
     })
   })
@@ -92,7 +92,7 @@ describe('App.tsx', () => {
       statusCode: 200,
       body: [
         {
-          id: '1',
+          id: 1,
           name: 'Out of Stock Item',
           description: 'This item is out of stock',
           stockCount: 0,
