@@ -14,23 +14,31 @@ declare global {
 
 describe('App.tsx', () => {
   beforeEach(() => {
-    cy.intercept('GET', `v1/items`, {
-      statusCode: 200,
-      body: [
-        {
-          id: 1,
-          name: 'Test Item 1',
-          description: 'This is a test item',
-          stockCount: 5,
+    cy.intercept(
+      'GET',
+      `v1/items`,
+      pact.toHandler({
+        description: 'Get items should return a success response',
+        providerState: 'There are 2 items',
+        response: {
+          status: 200,
+          body: [
+            {
+              id: 1,
+              name: 'Test Item 1',
+              description: 'This is a test item',
+              stockCount: 5,
+            },
+            {
+              id: 2,
+              name: 'Test Item 2',
+              description: 'This is another test item',
+              stockCount: 3,
+            },
+          ],
         },
-        {
-          id: 2,
-          name: 'Test Item 2',
-          description: 'This is another test item',
-          stockCount: 3,
-        },
-      ],
-    }).as('getItems')
+      })
+    ).as('getItems')
   })
 
   it('displays the application title', () => {
@@ -105,17 +113,25 @@ describe('App.tsx', () => {
   })
 
   it('disables buy button when stock is 0', () => {
-    cy.intercept('GET', `v1/items`, {
-      statusCode: 200,
-      body: [
-        {
-          id: 1,
-          name: 'Out of Stock Item',
-          description: 'This item is out of stock',
-          stockCount: 0,
+    cy.intercept(
+      'GET',
+      `v1/items`,
+      pact.toHandler({
+        description: 'Get items should return an item with 0 stock',
+        providerState: 'There is an item with 0 stock',
+        response: {
+          status: 200,
+          body: [
+            {
+              id: 1,
+              name: 'Out of Stock Item',
+              description: 'This item is out of stock',
+              stockCount: 0,
+            },
+          ],
         },
-      ],
-    }).as('getItems')
+      })
+    ).as('getItems')
 
     cy.mount(<App />)
     cy.wait('@getItems')
