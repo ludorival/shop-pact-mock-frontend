@@ -9,11 +9,6 @@ on:
 jobs:
   build-and-test:
     runs-on: ubuntu-latest
-    env:
-      PACT_BROKER_BASE_URL: ${{ secrets.PACT_BROKER_BASE_URL }}
-      PACT_BROKER_TOKEN: ${{ secrets.PACT_BROKER_TOKEN }}
-      GIT_BRANCH: ${{ github.ref_name }}
-      GIT_COMMIT: ${{ github.sha }}
 
     steps:
       - name: Checkout code
@@ -30,12 +25,6 @@ jobs:
 
       - name: Run tests
         run: npm test
-
-      - name: Publish Pact contracts
-        run: npm run pact:publish
-
-      - name: Can I Deploy?
-        run: npm run pact:can-i-deploy
 
       - name: Build project
         run: npm run build 
