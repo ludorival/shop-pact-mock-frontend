@@ -35,18 +35,3 @@
 //     }
 //   }
 // }
-
-import 'pact-js-mock/lib/cypress/commands'
-import { pact } from './pact'
-
-before(() => {
-  cy.reloadPact(pact)
-})
-
-beforeEach(() => {
-  pact.setCurrentSource(Cypress.currentTest.title)
-})
-
-after(() => {
-  cy.writePact(pact)
-})

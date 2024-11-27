@@ -1,6 +1,5 @@
 import { mount } from 'cypress/react'
 import App from './App'
-import { pact } from '../cypress/support/pact'
 
 Cypress.Commands.add('mount', mount)
 
