@@ -19,7 +19,7 @@ describe('App.tsx', () => {
       `v1/items`,
       pact.toHandler({
         description: 'Get items should return a success response',
-        providerState: 'There are 2 items',
+        providerStates: [{name: 'There are 2 items'}],
         response: {
           status: 200,
           body: [
@@ -67,7 +67,7 @@ describe('App.tsx', () => {
       `v1/purchase`,
       pact.toHandler({
         description: 'Purchase should return a success response',
-        providerState: 'There is an item with stock',
+        providerStates: [{name: 'There is an item with stock'}],
         response: {
           status: 200,
         },
@@ -97,7 +97,7 @@ describe('App.tsx', () => {
       `v1/purchase`,
       pact.toHandler({
         description: 'Purchase should return an error',
-        providerState: 'There is an error',
+        providerStates: [{name: 'There is an error'}],
         response: {
           status: 400,
         },
@@ -118,7 +118,7 @@ describe('App.tsx', () => {
       `v1/items`,
       pact.toHandler({
         description: 'Get items should return an item with 0 stock',
-        providerState: 'There is an item with 0 stock',
+        providerStates: [{name: 'There is an item with 0 stock'}] ,
         response: {
           status: 200,
           body: [
