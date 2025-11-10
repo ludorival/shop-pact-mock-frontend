@@ -263,6 +263,12 @@ In this tutorial, we'll explore how to implement contract testing using Pact in 
 - [`order-service`](https://github.com/ludorival/order-service-pact-mock-demo): A Springboot application handling orders written in Kotlin and using MockK for mocking (the brain that processes orders)
 - [`inventory-service`](https://github.com/ludorival/inventory-service-pact-mock-demo): Another Springboot application managing inventory written in Kotlin and also using MockK (the warehouse keeper)
 
+Before we explore the architecture, here's a glimpse of our shop-frontend in action:
+
+![Shop Frontend Demo](src/new%20amazon.gif)
+
+*Okay, okay, it's not about to replace Amazon, but you get the idea, right?* 😄🛒
+
 ```mermaid
 graph LR
     A[shop-frontend] --> B[order-service]
