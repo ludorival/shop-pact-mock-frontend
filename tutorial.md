@@ -60,7 +60,7 @@ First, please:
    - What testing framework is used? (Jest, Mocha, Vitest, etc.)
    - What is the consumer name? (infer from package.json name or project structure)
 
-2. Access the pact-js-mock README from https://github.com/ludorival/pact-js-mock to understand the setup requirements. If you cannot access the README remotely, please ask me to provide a copy of it.
+2. Install the pact-js-mock npm dependency and then read the README from the installed package to understand the setup requirements.
 
 3. Based on your analysis and the README documentation, apply the appropriate setup:
    
