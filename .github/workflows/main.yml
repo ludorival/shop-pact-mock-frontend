@@ -6,6 +6,12 @@ on:
   pull_request:
     branches: [ main ]
 
+env:
+  PACT_BROKER_BASE_URL: ${{ secrets.PACT_BROKER_BASE_URL }}
+  PACT_BROKER_TOKEN: ${{ secrets.PACT_BROKER_TOKEN }}
+  GIT_COMMIT: ${{ github.sha }}
+  GIT_BRANCH: ${{ github.ref_name }}
+
 jobs:
   build-and-test:
     runs-on: ubuntu-latest
@@ -13,6 +19,8 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
+        with:
+          fetch-depth: 0  # Fetch full history for git commands
 
       - name: Setup Node.js
         uses: actions/setup-node@v4
@@ -27,4 +35,13 @@ jobs:
         run: npm test
 
       - name: Build project
-        run: npm run build 
+        run: npm run build
+
+      - name: Publish Pact contracts
+        if: success() && env.PACT_BROKER_BASE_URL != '' && env.PACT_BROKER_TOKEN != ''
+        run: npm run pact:publish
+        env:
+          PACT_BROKER_BASE_URL: ${{ secrets.PACT_BROKER_BASE_URL }}
+          PACT_BROKER_TOKEN: ${{ secrets.PACT_BROKER_TOKEN }}
+          GIT_COMMIT: ${{ github.sha }}
+          GIT_BRANCH: ${{ github.ref_name }} 

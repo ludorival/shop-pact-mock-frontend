@@ -11,7 +11,9 @@
     "lint": "eslint .",
     "preview": "vite preview",
     "format": "prettier --write \"src/**/*.{ts,tsx,css,md}\"",
-    "format:check": "prettier --check \"src/**/*.{ts,tsx,css,md}\""
+    "format:check": "prettier --check \"src/**/*.{ts,tsx,css,md}\"",
+    "pact:publish": "pact-broker publish pacts --consumer-app-version=\"${GIT_COMMIT:-$(git rev-parse HEAD)}\" --branch=\"${GIT_BRANCH:-$(git rev-parse --abbrev-ref HEAD)}\"",
+    "pact:can-i-deploy": "pact-broker can-i-deploy --pacticipant shop-frontend --version \"${GIT_COMMIT:-$(git rev-parse HEAD)}\" --to-environment production"
   },
   "dependencies": {
     "@ant-design/icons": "^5.5.1",
@@ -21,6 +23,7 @@
   },
   "devDependencies": {
     "@eslint/js": "^9.13.0",
+    "@pact-foundation/pact-cli": "^16.1.5",
     "@types/react": "^18.3.12",
     "@types/react-dom": "^18.3.1",
     "@vitejs/plugin-react": "^4.3.3",
@@ -31,6 +34,7 @@
     "eslint-plugin-react-hooks": "^5.0.0",
     "eslint-plugin-react-refresh": "^0.4.14",
     "globals": "^15.11.0",
+    "pact-js-mock": "^1.0.0",
     "prettier": "^3.3.3",
     "typescript": "~5.6.2",
     "typescript-eslint": "^8.11.0",

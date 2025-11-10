@@ -1,35 +1,32 @@
-import { mount } from 'cypress/react'
 import App from './App'
-
-Cypress.Commands.add('mount', mount)
-
-declare global {
-  namespace Cypress {
-    interface Chainable {
-      mount: typeof mount
-    }
-  }
-}
 
 describe('App.tsx', () => {
   beforeEach(() => {
-    cy.intercept('GET', `v1/items`, {
-      statusCode: 200,
-      body: [
-        {
-          id: 1,
-          name: 'Test Item 1',
-          description: 'This is a test item',
-          stockCount: 5,
-        },
-        {
-          id: 2,
-          name: 'Test Item 2',
-          description: 'This is another test item',
-          stockCount: 3,
-        },
-      ],
-    }).as('getItems')
+    cy.pactIntercept(
+      'GET',
+      '/order-service/v1/items',
+      {
+        statusCode: 200,
+        body: [
+          {
+            id: 1,
+            name: 'Test Item 1',
+            description: 'This is a test item',
+            stockCount: 5,
+          },
+          {
+            id: 2,
+            name: 'Test Item 2',
+            description: 'This is another test item',
+            stockCount: 3,
+          },
+        ],
+      },
+      {
+        description: 'Get items should return a success response',
+        providerStates: [{ name: 'There are 2 items' }],
+      }
+    ).as('getItems')
   })
 
   it('displays the application title', () => {
@@ -53,9 +50,17 @@ describe('App.tsx', () => {
   })
 
   it('allows selecting quantity and buying items', () => {
-    cy.intercept('POST', `v1/purchase`, {
-      statusCode: 200,
-    }).as('purchase')
+    cy.pactIntercept(
+      'POST',
+      '/order-service/v1/purchase',
+      {
+        statusCode: 200,
+      },
+      {
+        description: 'Purchase should return a success response',
+        providerStates: [{ name: 'There is an item with stock' }],
+      }
+    ).as('purchase')
 
     cy.mount(<App />)
     cy.wait('@getItems')
@@ -75,9 +80,17 @@ describe('App.tsx', () => {
   })
 
   it('handles purchase errors correctly', () => {
-    cy.intercept('POST', `v1/purchase`, {
-      statusCode: 500,
-    }).as('purchaseError')
+    cy.pactIntercept(
+      'POST',
+      '/order-service/v1/purchase',
+      {
+        statusCode: 500,
+      },
+      {
+        description: 'Purchase should return an error',
+        providerStates: [{ name: 'There is an error' }],
+      }
+    ).as('purchaseError')
 
     cy.mount(<App />)
     cy.wait('@getItems')
@@ -88,17 +101,25 @@ describe('App.tsx', () => {
   })
 
   it('disables buy button when stock is 0', () => {
-    cy.intercept('GET', `v1/items`, {
-      statusCode: 200,
-      body: [
-        {
-          id: 1,
-          name: 'Out of Stock Item',
-          description: 'This item is out of stock',
-          stockCount: 0,
-        },
-      ],
-    }).as('getItems')
+    cy.pactIntercept(
+      'GET',
+      '/order-service/v1/items',
+      {
+        statusCode: 200,
+        body: [
+          {
+            id: 1,
+            name: 'Out of Stock Item',
+            description: 'This item is out of stock',
+            stockCount: 0,
+          },
+        ],
+      },
+      {
+        description: 'Get items should return an item with 0 stock',
+        providerStates: [{ name: 'There is an item with 0 stock' }],
+      }
+    ).as('getItems')
 
     cy.mount(<App />)
     cy.wait('@getItems')
