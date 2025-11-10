@@ -263,11 +263,16 @@ In this tutorial, we'll explore how to implement contract testing using Pact in 
 - [`order-service`](https://github.com/ludorival/order-service-pact-mock-demo): A Springboot application handling orders written in Kotlin and using MockK for mocking (the brain that processes orders)
 - [`inventory-service`](https://github.com/ludorival/inventory-service-pact-mock-demo): Another Springboot application managing inventory written in Kotlin and also using MockK (the warehouse keeper)
 
-Before we explore the architecture, here's a glimpse of our shop-frontend in action:
+
+These repositories will serve as the base code for this tutorial. We'll build step-by-step instructions on top of them, illustrating how to implement contract testing in real applications. No fake examples here - just real, working code! 💪
+
+Before we dive into the architecture, let's see what we're building! Here's our shop-frontend in action:
 
 ![Shop Frontend Demo](src/new%20amazon.gif)
 
-*Okay, okay, it's not about to replace Amazon, but you get the idea, right?* 😄🛒
+*Okay, okay, it's not about to replace Amazon, but you get the idea, right?* 😄🛒 As you can see, it's a simple e-commerce interface where users can browse products, add items to their cart, and place orders. Pretty standard stuff, but perfect for demonstrating contract testing in action!
+
+Now, let's talk architecture. Our microservices setup follows a simple request flow:
 
 ```mermaid
 graph LR
@@ -275,7 +280,7 @@ graph LR
     B --> C[inventory-service]
 ```
 
-These repositories will serve as the base code for this tutorial. We'll build step-by-step instructions on top of them, illustrating how to implement contract testing in real applications. No fake examples here - just real, working code! 💪
+Here's how it works: when a user interacts with the `shop-frontend` (like adding an item to cart or placing an order), it makes API calls to the `order-service`. The `order-service` then communicates with the `inventory-service` to check stock availability and update inventory levels. Each service has its own responsibilities, and they need to communicate seamlessly - which is exactly where contract testing comes in! 🎯
 
 ## Prerequisites 📋
 
