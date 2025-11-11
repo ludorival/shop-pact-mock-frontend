@@ -49,75 +49,10 @@ This tutorial demonstrates how to transform your existing test mocks into compre
 
 **Use this prompt in your AI agent (Copilot, Cursor, etc.) to automatically detect your stack and convert existing mocks to Pact contracts:**
 
-```
-I want to convert my existing frontend test mocks to generate Pact consumer contracts using pact-js-mock. Please analyze my codebase and apply the appropriate approach based on what you find.
+We've created a detailed prompt that handles the conversion process for you. Instead of embedding the entire prompt here, check out the [AGENTS.md documentation](https://github.com/ludorival/pact-js-mock/blob/main/docs/AGENTS.md) in the pact-js-mock repository.
 
-First, please:
-1. Analyze the codebase to determine:
-   - Does it use Cypress for testing? (look for cypress.config.ts, cy.intercept() calls, or Cypress test files)
-   - Does it use MSW (Mock Service Worker)? (look for msw imports, setupServer, http.get(), or graphql.query() calls)
-   - If using MSW, is it for REST APIs or GraphQL? (check for http.* vs graphql.* handlers)
-   - What testing framework is used? (Jest, Mocha, Vitest, etc.)
-   - What is the consumer name? (infer from package.json name or project structure)
 
-2. Install the pact-js-mock npm dependency and then read the README from the installed package to understand the setup requirements.
-
-3. Based on your analysis and the README documentation, apply the appropriate setup:
-   
-   **If Cypress is detected:**
-   - Register the pact-js-mock plugin in cypress.config.ts (or cypress/plugins/index.js)
-   - Add the Cypress support import to cypress/support/component.ts or cypress/support/e2e.ts
-   - Convert all cy.intercept() calls to cy.pactIntercept() calls
-   - Ensure provider names are inferred from URL patterns
-   
-   **If MSW is detected:**
-   - Replace MSW's `http` with `pactHttp` from 'pact-js-mock/lib/msw'
-   - Replace MSW's `graphql` with `pactGraphql` from 'pact-js-mock/lib/msw' (if GraphQL)
-   - Add the required lifecycle hooks (deletePacts, reloadPacts, writePacts, setCurrentSourceForPacts) based on the test framework
-   - Ensure handlers are properly set up with the pact registry
-
-4. Run the build to ensure no regression:
-   - Execute the build command (e.g., `npm run build` or `npm run build:test`)
-   - Verify that the build completes successfully without errors
-   - Confirm that existing functionality is not broken by the setup changes
-
-5. Run the tests to verify contract generation:
-   - Execute the test command (e.g., `npm test` or `npm run test`)
-   - Verify that all tests pass successfully
-   - Confirm that Pact contracts are generated in the expected location (typically `pacts/` directory)
-   - Check that the generated contract files contain the expected interactions
-
-6. Add npm scripts for publishing contracts to Pact Broker:
-   - pact:publish: publish contracts to the broker
-   - pact:can-i-deploy: check deployment compatibility
-
-7. Analyze and update CI/CD pipeline:
-   - Detect existing CI/CD pipeline (GitHub Actions, Jenkins, GitLab CI, Azure DevOps, CircleCI, etc.)
-   - Ask for Pact Broker URL if not found in environment variables or configuration
-   - Ask for Pact Broker token if authentication is required
-   - Add/modify pipeline steps to:
-     * Run tests to generate contracts
-     * Publish contracts to Pact Broker after successful tests (using PACT_BROKER_BASE_URL and PACT_BROKER_TOKEN)
-     * Optionally add pact:can-i-deploy check before deployment
-   - Use GIT_COMMIT or equivalent for contract versioning
-
-8. Ensure all changes maintain existing test behavior while generating Pact contracts automatically.
-
-9. Publish contracts and prepare for provider verification:
-   - Ensure the build and tests run successfully
-   - Verify that Pact contracts are generated in the expected location (typically `pacts/` directory)
-   - Publish contracts to the Pact Broker using the publish script (this makes contracts available for provider verification)
-   - Verify contracts are visible in the Pact Broker UI
-   - Document the following information needed for the provider verification step:
-     * Consumer name (used to identify which contracts the provider needs to verify)
-     * Provider name (the service that will verify the contracts)
-     * Pact Broker URL and authentication token (required for provider to fetch contracts)
-     * Contract version/GIT_COMMIT (used for versioning and tracking)
-   - Prepare guidance for the provider team to implement verification tests that will:
-     * Fetch contracts from the Pact Broker
-     * Verify the provider service satisfies all consumer contracts
-     * Publish verification results back to the Pact Broker
-```
+The documentation includes step-by-step instructions, code examples, and best practices to help your AI assistant migrate your existing mocks to generate Pact contracts without modifying your test logic.
 
 ### AI Prompt for Backend Contract Tests (JVM)
 
