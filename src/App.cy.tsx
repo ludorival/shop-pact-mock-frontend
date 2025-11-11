@@ -5,7 +5,7 @@ import App from './App'
 
 describe('App.tsx', () => {
   beforeEach(() => {
-    cy.intercept('GET', `order-service/v1/items`, {
+    cy.pactIntercept('GET', `order-service/v1/items`, {
       statusCode: 200,
       body: [
         {
@@ -45,9 +45,17 @@ describe('App.tsx', () => {
   })
 
   it('allows selecting quantity and buying items', () => {
-    cy.intercept('POST', `order-service/v1/purchase`, {
-      statusCode: 200,
-    }).as('purchase')
+    cy.pactIntercept(
+      'POST',
+      `order-service/v1/purchase`,
+      {
+        statusCode: 200,
+      },
+      {
+        description: 'purchase item successfully',
+        providerStates: 'item exists and is available',
+      },
+    ).as('purchase')
 
     mount(<App />)
     cy.wait('@getItems')
@@ -67,9 +75,17 @@ describe('App.tsx', () => {
   })
 
   it('handles purchase errors correctly', () => {
-    cy.intercept('POST', `order-service/v1/purchase`, {
-      statusCode: 500,
-    }).as('purchaseError')
+    cy.pactIntercept(
+      'POST',
+      `order-service/v1/purchase`,
+      {
+        statusCode: 500,
+      },
+      {
+        description: 'purchase fails with server error',
+        providerStates: 'purchase fails',
+      },
+    ).as('purchaseError')
 
     mount(<App />)
     cy.wait('@getItems')
@@ -80,7 +96,7 @@ describe('App.tsx', () => {
   })
 
   it('disables buy button when stock is 0', () => {
-    cy.intercept('GET', `order-service/v1/items`, {
+    cy.pactIntercept('GET', `order-service/v1/items`, {
       statusCode: 200,
       body: [
         {
