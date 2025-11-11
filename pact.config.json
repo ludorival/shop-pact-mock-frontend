@@ -1,0 +1,6 @@
+{
+  "consumerName": "shop-frontend",
+  "pactVersion": "2.0.0",
+  "outputDir": "./pacts"
+}
+
