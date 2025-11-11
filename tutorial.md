@@ -68,7 +68,6 @@ First, please:
    - Register the pact-js-mock plugin in cypress.config.ts (or cypress/plugins/index.js)
    - Add the Cypress support import to cypress/support/component.ts or cypress/support/e2e.ts
    - Convert all cy.intercept() calls to cy.pactIntercept() calls
-   - Ensure provider names are inferred from URL patterns
    
    **If MSW is detected:**
    - Replace MSW's `http` with `pactHttp` from 'pact-js-mock/lib/msw'
