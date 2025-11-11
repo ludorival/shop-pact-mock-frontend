@@ -1,0 +1,10 @@
+{
+  "consumerName": "shop-frontend",
+  "pactVersion": "2.0.0",
+  "options": {
+    "headersConfig": {
+      "includes": ["content-type"]
+    }
+  }
+}
+

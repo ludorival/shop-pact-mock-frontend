@@ -1,0 +1,103 @@
+{
+  "consumer": {
+    "name": "shop-frontend"
+  },
+  "provider": {
+    "name": "order-service"
+  },
+  "metadata": {
+    "pactSpecification": {
+      "version": "2.0.0"
+    },
+    "client": {
+      "name": "pact-js-mock",
+      "version": "1.0.1"
+    }
+  },
+  "interactions": [
+    {
+      "description": "GET /order-service/v1/items returns status 200",
+      "response": {
+        "status": 200,
+        "body": [
+          {
+            "id": 1,
+            "name": "Test Item 1",
+            "description": "This is a test item",
+            "stockCount": 5
+          },
+          {
+            "id": 2,
+            "name": "Test Item 2",
+            "description": "This is another test item",
+            "stockCount": 3
+          }
+        ]
+      },
+      "request": {
+        "method": "GET",
+        "path": "/order-service/v1/items",
+        "headers": {},
+        "body": "",
+        "query": ""
+      }
+    },
+    {
+      "description": "POST /order-service/v1/purchase returns status 200",
+      "response": {
+        "status": 200
+      },
+      "request": {
+        "method": "POST",
+        "path": "/order-service/v1/purchase",
+        "headers": {
+          "content-type": "application/json"
+        },
+        "body": {
+          "itemId": 1,
+          "quantity": 3
+        },
+        "query": ""
+      }
+    },
+    {
+      "description": "POST /order-service/v1/purchase returns status 500",
+      "response": {
+        "status": 500
+      },
+      "request": {
+        "method": "POST",
+        "path": "/order-service/v1/purchase",
+        "headers": {
+          "content-type": "application/json"
+        },
+        "body": {
+          "itemId": 1,
+          "quantity": 1
+        },
+        "query": ""
+      }
+    },
+    {
+      "description": "GET /order-service/v1/items returns status 200 (disables buy button when stock is 0)",
+      "response": {
+        "status": 200,
+        "body": [
+          {
+            "id": 1,
+            "name": "Out of Stock Item",
+            "description": "This item is out of stock",
+            "stockCount": 0
+          }
+        ]
+      },
+      "request": {
+        "method": "GET",
+        "path": "/order-service/v1/items",
+        "headers": {},
+        "body": "",
+        "query": ""
+      }
+    }
+  ]
+}

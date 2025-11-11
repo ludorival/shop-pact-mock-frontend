@@ -16,5 +16,8 @@
 // Import commands.js using ES2015 syntax:
 import './commands'
 
+// Import pact-js-mock to register cy.pactIntercept() command and lifecycle hooks
+import 'pact-js-mock/lib/cypress'
+
 // Alternatively you can use CommonJS syntax:
 // require('./commands')
