@@ -1,15 +1,7 @@
 import { mount } from 'cypress/react'
 import App from './App'
 
-Cypress.Commands.add('mount', mount)
 
-declare global {
-  namespace Cypress {
-    interface Chainable {
-      mount: typeof mount
-    }
-  }
-}
 
 describe('App.tsx', () => {
   beforeEach(() => {
@@ -33,12 +25,12 @@ describe('App.tsx', () => {
   })
 
   it('displays the application title', () => {
-    cy.mount(<App />)
+    mount(<App />)
     cy.contains('h1', 'Available Items').should('be.visible')
   })
 
   it('displays items with their details', () => {
-    cy.mount(<App />)
+    mount(<App />)
     cy.wait('@getItems')
 
     // Check first item
@@ -57,7 +49,7 @@ describe('App.tsx', () => {
       statusCode: 200,
     }).as('purchase')
 
-    cy.mount(<App />)
+    mount(<App />)
     cy.wait('@getItems')
 
     // Select quantity from dropdown
@@ -79,7 +71,7 @@ describe('App.tsx', () => {
       statusCode: 500,
     }).as('purchaseError')
 
-    cy.mount(<App />)
+    mount(<App />)
     cy.wait('@getItems')
 
     cy.get('button').contains('Buy Now').first().click()
@@ -100,7 +92,7 @@ describe('App.tsx', () => {
       ],
     }).as('getItems')
 
-    cy.mount(<App />)
+    mount(<App />)
     cy.wait('@getItems')
 
     cy.get('button').contains('Buy Now')
