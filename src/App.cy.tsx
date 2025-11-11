@@ -5,7 +5,7 @@ import App from './App'
 
 describe('App.tsx', () => {
   beforeEach(() => {
-    cy.intercept('GET', `v1/items`, {
+    cy.intercept('GET', `order-service/v1/items`, {
       statusCode: 200,
       body: [
         {
@@ -45,7 +45,7 @@ describe('App.tsx', () => {
   })
 
   it('allows selecting quantity and buying items', () => {
-    cy.intercept('POST', `v1/purchase`, {
+    cy.intercept('POST', `order-service/v1/purchase`, {
       statusCode: 200,
     }).as('purchase')
 
@@ -67,7 +67,7 @@ describe('App.tsx', () => {
   })
 
   it('handles purchase errors correctly', () => {
-    cy.intercept('POST', `v1/purchase`, {
+    cy.intercept('POST', `order-service/v1/purchase`, {
       statusCode: 500,
     }).as('purchaseError')
 
@@ -80,7 +80,7 @@ describe('App.tsx', () => {
   })
 
   it('disables buy button when stock is 0', () => {
-    cy.intercept('GET', `v1/items`, {
+    cy.intercept('GET', `order-service/v1/items`, {
       statusCode: 200,
       body: [
         {
