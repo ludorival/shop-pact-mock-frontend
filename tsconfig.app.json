@@ -22,5 +22,5 @@
     "noUnusedParameters": true,
     "noFallthroughCasesInSwitch": true,
   },
-  "include": ["src"]
+  "include": ["src", "cypress/support/**/*.ts", "cypress/support/**/*.d.ts"]
 }
