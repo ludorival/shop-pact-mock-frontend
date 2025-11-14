@@ -28,3 +28,20 @@ jobs:
       
       - name: Run tests
         run: npm test
+
+      - name: Publish Pact contracts
+        if: success()
+        run: npm run pact:publish
+        env:
+          PACT_BROKER_BASE_URL: ${{ secrets.PACT_BROKER_BASE_URL }}
+          PACT_BROKER_TOKEN: ${{ secrets.PACT_BROKER_TOKEN }}
+          GIT_COMMIT: ${{ github.sha }}
+          GIT_BRANCH: ${{ github.ref_name }}
+
+      - name: Check if consumer can be deployed
+        if: success()
+        run: npm run pact:can-i-deploy
+        env:
+          PACT_BROKER_BASE_URL: ${{ secrets.PACT_BROKER_BASE_URL }}
+          PACT_BROKER_TOKEN: ${{ secrets.PACT_BROKER_TOKEN }}
+          GIT_COMMIT: ${{ github.sha }}
