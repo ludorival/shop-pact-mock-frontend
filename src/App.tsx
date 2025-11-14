@@ -6,7 +6,7 @@ interface Item {
   id: number
   name: string
   description: string
-  stockCount: number
+  stock: number
 }
 
 const { Content } = Layout
@@ -112,7 +112,7 @@ const App: React.FC = () => {
                     onChange={value => handleQuantityChange(item.id, value)}
                     style={{ width: 120 }}
                   >
-                    {[...Array(item.stockCount)].map((_, i) => (
+                    {[...Array(item.stock)].map((_, i) => (
                       <Select.Option key={i + 1} value={i + 1}>
                         {i + 1}
                       </Select.Option>
@@ -122,7 +122,7 @@ const App: React.FC = () => {
                     type="primary"
                     icon={<ShoppingCartOutlined />}
                     onClick={() => handleBuy(item.id)}
-                    disabled={item.stockCount === 0}
+                    disabled={item.stock === 0}
                   >
                     Buy Now
                   </Button>
@@ -145,7 +145,7 @@ const App: React.FC = () => {
                   </>
                 }
               />
-              <Text type="secondary">Available Stock: {item.stockCount}</Text>
+              <Text type="secondary">Available Stock: {item.stock}</Text>
             </List.Item>
           )}
         />

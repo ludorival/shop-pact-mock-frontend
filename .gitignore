@@ -12,6 +12,9 @@ dist
 dist-ssr
 *.local
 
+# Pact contracts (generated during tests, published to Pact Broker)
+pacts/
+
 # Editor directories and files
 .vscode/*
 !.vscode/extensions.json
