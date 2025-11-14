@@ -45,4 +45,3 @@ jobs:
           PACT_BROKER_BASE_URL: ${{ secrets.PACT_BROKER_BASE_URL }}
           PACT_BROKER_TOKEN: ${{ secrets.PACT_BROKER_TOKEN }}
           GIT_COMMIT: ${{ github.sha }}
-          GIT_BRANCH: ${{ github.ref_name }}

@@ -13,7 +13,7 @@
     "format": "prettier --write \"src/**/*.{ts,tsx,css,md}\"",
     "format:check": "prettier --check \"src/**/*.{ts,tsx,css,md}\"",
     "pact:publish": "pact-broker publish ./pacts --broker-base-url=$PACT_BROKER_BASE_URL --broker-token=$PACT_BROKER_TOKEN --consumer-app-version=$GIT_COMMIT --branch=$GIT_BRANCH",
-    "pact:can-i-deploy": "pact-broker can-i-deploy --pacticipant shop-frontend --version $GIT_COMMIT --to $GIT_BRANCH --broker-base-url=$PACT_BROKER_BASE_URL --broker-token=$PACT_BROKER_TOKEN"
+    "pact:can-i-deploy": "pact-broker can-i-deploy --pacticipant shop-frontend --version $GIT_COMMIT --broker-base-url=$PACT_BROKER_BASE_URL --broker-token=$PACT_BROKER_TOKEN"
   },
   "dependencies": {
     "@ant-design/icons": "^5.5.1",
